@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Node
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# Large files and models
+*.csv
+*.pkl
+*.h5
+*.pt
+*.pth
+*.onnx
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+temp_audio/
+*.log
