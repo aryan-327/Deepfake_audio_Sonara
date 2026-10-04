@@ -10,8 +10,8 @@ async def run_inference(audio_path: str, send_log_callback=None) -> dict:
     """
     
     logs = [
-        "Loading audio buffer...",
-        "Validating audio format and headers...",
+        "Ingesting audio stream and verifying 16kHz PCM headers...",
+        "Validating acoustic channel consistency...",
         "Extracting Wav2Vec 2.0 768-D acoustic representations...",
         "Computing Mel-spectrogram transforms...",
         "Identifying speech segments and silences...",

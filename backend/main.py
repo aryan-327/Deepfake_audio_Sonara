@@ -22,10 +22,18 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 # Store job info in memory (not for prod)
 jobs = {}
 
+ALLOWED_EXTENSIONS = {".wav", ".mp3", ".m4a", ".aac", ".ogg", ".flac", ".webm", ".wma"}
+
 @app.post("/upload")
 async def upload_audio(file: UploadFile = File(...)):
-    if not file.filename.endswith(".wav"):
-        raise HTTPException(status_code=400, detail="Only .wav files are supported")
+    filename_lower = file.filename.lower()
+    ext = os.path.splitext(filename_lower)[1]
+    
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Unsupported audio format '{ext}'. Supported: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+        )
         
     job_id = str(uuid.uuid4())
     file_path = os.path.join(TEMP_DIR, f"{job_id}_{file.filename}")
@@ -36,10 +44,11 @@ async def upload_audio(file: UploadFile = File(...)):
     jobs[job_id] = {
         "status": "pending",
         "file_path": file_path,
-        "filename": file.filename
+        "filename": file.filename,
+        "format": ext.replace(".", "").upper()
     }
     
-    return {"job_id": job_id, "filename": file.filename}
+    return {"job_id": job_id, "filename": file.filename, "format": ext.replace(".", "").upper()}
 
 
 @app.websocket("/ws/{job_id}")

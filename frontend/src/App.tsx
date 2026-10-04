@@ -111,11 +111,28 @@ function App() {
       <main className="flex-1 relative z-20 flex flex-col items-center min-h-screen">
 
         {/* Minimal Header */}
-        <header className="absolute top-0 w-full p-6 flex justify-between items-center z-30">
-          <div className="font-mono text-xl tracking-[0.2em] font-medium text-molten-textPrimary">SONARA</div>
+        <header className="fixed top-0 w-full px-8 py-5 flex justify-between items-center z-50 bg-[#0A0807]/90 backdrop-blur-md border-b border-molten-accent/10">
+          <div className="flex items-center gap-8">
+            <div className="font-mono text-[28px] md:text-[32px] font-bold tracking-[0.2em] text-metallic-amber-logo drop-shadow-logo-glow leading-none pt-1">
+              SONARA
+            </div>
+            
+            {/* HUD Callouts (Desktop only to save space) */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="bg-[#0D0B0A]/70 border border-molten-accent/20 rounded-full px-4 py-1 flex items-baseline gap-2 backdrop-blur-sm shadow-[0_0_10px_rgba(255,107,53,0.1)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9B948C]">MODEL</span>
+                <span className="font-mono text-[12px] font-semibold text-molten-accent">v2.1</span>
+              </div>
+              <div className="bg-[#0D0B0A]/70 border border-molten-accent/20 rounded-full px-4 py-1 flex items-baseline gap-2 backdrop-blur-sm shadow-[0_0_10px_rgba(255,107,53,0.1)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#9B948C]">STATUS</span>
+                <span className="font-mono text-[12px] font-semibold text-molten-accent">READY</span>
+              </div>
+            </div>
+          </div>
+
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-molten-textSecondary hover:text-white transition-colors duration-200 font-mono text-sm uppercase tracking-wider"
+            className="text-molten-textSecondary hover:text-white transition-colors duration-200 font-mono text-[11px] uppercase tracking-[0.2em]"
           >
             History
           </button>
