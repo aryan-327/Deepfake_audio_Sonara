@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { AnalysisResult } from '../types';
-import { ShieldCheck, ShieldAlert, RotateCcw } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, RotateCcw, AlertTriangle, CheckCircle2, Mic, Cpu } from 'lucide-react';
 
 interface ResultRevealProps {
   result: AnalysisResult;
@@ -50,7 +50,7 @@ export default function ResultReveal({ result, onReset }: ResultRevealProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-2xl flex flex-col items-center z-10"
+      className="w-full max-w-2xl flex flex-col items-center z-10 pt-32 pb-24 px-4"
     >
       {/* Heavy Vignette flash on reveal */}
       <motion.div 
@@ -91,27 +91,70 @@ export default function ResultReveal({ result, onReset }: ResultRevealProps) {
           <span className={`font-mono text-3xl ${accentColor}`}>%</span>
         </div>
 
-        <div className="w-full bg-[#110E0D] p-6 rounded-lg border border-molten-border mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <span className="font-mono text-xs text-molten-textSecondary uppercase tracking-widest">Confidence Spectrum</span>
-            <span className="font-mono text-xs text-molten-textSecondary uppercase tracking-widest">{isHuman ? 'Authentic' : 'Synthetic'}</span>
-          </div>
-          
-          <div className="w-full h-2 bg-molten-base rounded-full overflow-hidden relative">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${result.confidence}%` }}
-              transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
-              className={`absolute top-0 left-0 h-full ${bgColor}`}
-            />
+        <div className="w-full bg-[#110E0D] p-6 rounded-xl border border-molten-border mb-8 flex flex-col gap-5">
+          <div>
+            <div className="flex justify-between items-center mb-3">
+              <span className="font-mono text-xs text-molten-textSecondary uppercase tracking-widest">Confidence Spectrum</span>
+              <span className="font-mono text-xs font-semibold uppercase tracking-widest text-molten-textPrimary">
+                {isHuman ? 'Authentic Human' : 'Synthetic Deepfake'}
+              </span>
+            </div>
+            
+            <div className="w-full h-2 bg-molten-base rounded-full overflow-hidden relative">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${result.confidence}%` }}
+                transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
+                className={`absolute top-0 left-0 h-full ${bgColor}`}
+              />
+            </div>
           </div>
 
-          <p className="font-mono text-sm text-molten-textPrimary mt-6 leading-relaxed">
-            {isHuman 
-              ? "Analysis indicates natural vocal tract resonance and acoustic consistency. No synthetic signatures detected."
-              : `High spectral inconsistency detected in multiple segments. Analysis confirms deepfake generation artifacts.`
-            }
-          </p>
+          {/* Plain English Verdict Box */}
+          <div className={`p-4 rounded-lg border ${isHuman ? 'bg-molten-human/5 border-molten-human/20' : 'bg-molten-spoof/5 border-molten-spoof/20'}`}>
+            <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold uppercase tracking-wider">
+              {isHuman ? (
+                <>
+                  <CheckCircle2 size={16} className="text-molten-human" />
+                  <span className="text-molten-human">Conclusion: Genuine Human Voice</span>
+                </>
+              ) : (
+                <>
+                  <AlertTriangle size={16} className="text-molten-spoof" />
+                  <span className="text-molten-spoof">Conclusion: AI-Synthesized Voice (Deepfake)</span>
+                </>
+              )}
+            </div>
+            <p className="text-sm text-molten-textPrimary/90 leading-relaxed font-sans">
+              {isHuman
+                ? "This recording was spoken by a real person. It displays genuine biological vocal cord vibrations, natural breathing intervals, and smooth acoustic pitch transitions with zero synthetic traces."
+                : "This recording was created or cloned using an AI voice generator. Our neural acoustic models detected digital frequency glitches and synthetic vocoder patterns that do not occur in human speech."
+              }
+            </p>
+          </div>
+
+          {/* Key Forensic Evidence Checklist */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div className="bg-[#161210] p-3 rounded-lg border border-molten-border/60 flex items-start gap-2.5">
+              {isHuman ? <Mic size={16} className="text-molten-human shrink-0 mt-0.5" /> : <Cpu size={16} className="text-molten-spoof shrink-0 mt-0.5" />}
+              <div>
+                <div className="font-mono text-[10px] text-molten-textSecondary uppercase tracking-wider">Voice Source</div>
+                <div className="font-sans text-xs font-semibold text-molten-textPrimary mt-0.5">
+                  {isHuman ? "Biological Vocal Tract" : "Neural AI Vocoder (TTS)"}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#161210] p-3 rounded-lg border border-molten-border/60 flex items-start gap-2.5">
+              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isHuman ? 'bg-molten-human' : 'bg-molten-spoof'}`} />
+              <div>
+                <div className="font-mono text-[10px] text-molten-textSecondary uppercase tracking-wider">Primary Finding</div>
+                <div className="font-sans text-xs font-semibold text-molten-textPrimary mt-0.5">
+                  {isHuman ? "Natural Pitch & Harmonics" : "Synthetic Frequency Glitches"}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <motion.button 

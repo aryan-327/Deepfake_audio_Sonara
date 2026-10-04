@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, useScroll } from 'framer-motion';
 import LandingUpload from './components/LandingUpload';
 import AnalysisView from './components/AnalysisView';
@@ -14,6 +14,12 @@ function App() {
   const [file, setFile] = useState<File | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+
+  // Automatically reset window scroll position whenever the view changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [view]);
+
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('sonara_history');
     if (saved) {
@@ -71,7 +77,6 @@ function App() {
           setTimeout(() => setView('result'), 800); // Small delay before transition
         } else if (msgData.type === 'error') {
           console.error("WS Error:", msgData.message);
-          // Handle error state if needed
         }
       };
 
@@ -94,12 +99,23 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-molten-base relative flex">
-      {/* Scroll Progress Bar */}
-      <motion.div 
-        className="fixed top-0 left-0 right-0 h-1 bg-amber-500 z-50 origin-left"
-        style={{ scaleX: scrollYProgress }}
-      />
+    <div className="min-h-screen bg-molten-base relative flex flex-col">
+      {/* Scroll / Analysis Progress Bar */}
+      {view === 'upload' ? (
+        <motion.div 
+          className="fixed top-0 left-0 right-0 h-1 bg-amber-500 z-50 origin-left"
+          style={{ scaleX: scrollYProgress }}
+        />
+      ) : view === 'analyzing' ? (
+        <motion.div 
+          className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-molten-accent to-amber-300 z-50 origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: [0, 0.4, 0.75, 0.95] }}
+          transition={{ duration: 6, ease: "easeOut" }}
+        />
+      ) : (
+        <div className="fixed top-0 left-0 right-0 h-1 bg-amber-500/40 z-50" />
+      )}
 
       <AmbientBackground />
       {/* Global Grain/Noise overlay */}

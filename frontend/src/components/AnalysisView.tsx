@@ -55,7 +55,7 @@ export default function AnalysisView({ file, logs }: AnalysisViewProps) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-4xl flex flex-col gap-8 z-10"
+      className="w-full max-w-4xl flex flex-col gap-8 z-10 pt-32 pb-24 px-4"
     >
       {/* Waveform Player Section */}
       <motion.div 
