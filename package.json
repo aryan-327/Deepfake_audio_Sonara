@@ -1,0 +1,9 @@
+{
+  "name": "deepfake-audio-project",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "deploy": "firebase deploy --only hosting"
+  }
+}
+

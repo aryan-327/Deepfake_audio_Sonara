@@ -5,8 +5,12 @@ import AnalysisView from './components/AnalysisView';
 import ResultReveal from './components/ResultReveal';
 import HistorySidebar from './components/HistorySidebar';
 import AmbientBackground from './components/AmbientBackground';
+import { runClientSideInference } from './utils/forensicsEngine';
 
 import type { ViewState, AnalysisResult, HistoryItem } from './types';
+
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+const WS_BASE_URL = (import.meta.env.VITE_WS_URL || (API_BASE_URL.replace(/^http/, 'ws'))).replace(/\/$/, '');
 
 function App() {
   const { scrollYProgress } = useScroll();
@@ -55,39 +59,63 @@ function App() {
     const formData = new FormData();
     formData.append('file', uploadedFile);
 
+    const runFallback = async () => {
+      try {
+        const localResult = await runClientSideInference(uploadedFile, (msg) => {
+          setLogs(prev => [...prev, msg]);
+        });
+        setResult(localResult);
+        saveToHistory(localResult, uploadedFile);
+        setTimeout(() => setView('result'), 800);
+      } catch (err) {
+        console.error("Analysis failed:", err);
+        setView('upload');
+        setFile(null);
+      }
+    };
+
     try {
-      const res = await fetch('http://localhost:8000/upload', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+      const res = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
 
+      let receivedResult = false;
+
       // Connect WebSocket
-      const ws = new WebSocket(`ws://localhost:8000/ws/${data.job_id}`);
+      const ws = new WebSocket(`${WS_BASE_URL}/ws/${data.job_id}`);
 
       ws.onmessage = (event) => {
         const msgData = JSON.parse(event.data);
         if (msgData.type === 'log') {
           setLogs(prev => [...prev, msgData.message]);
         } else if (msgData.type === 'result') {
+          receivedResult = true;
           setResult(msgData.data);
           saveToHistory(msgData.data, uploadedFile);
-          setTimeout(() => setView('result'), 800); // Small delay before transition
+          setTimeout(() => setView('result'), 800);
         } else if (msgData.type === 'error') {
           console.error("WS Error:", msgData.message);
+          if (!receivedResult) runFallback();
         }
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket Error:', error);
+        console.warn('WebSocket connection failed, running in-browser forensics engine:', error);
+        if (!receivedResult) runFallback();
       };
 
     } catch (error) {
-      console.error(error);
-      setView('upload');
-      setFile(null);
+      console.info("Remote backend server unreachable. Switching to in-browser forensics engine:", error);
+      runFallback();
     }
   };
 

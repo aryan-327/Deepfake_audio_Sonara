@@ -27,3 +27,7 @@ Thumbs.db
 # Temp
 temp_audio/
 *.log
+
+# Firebase
+.firebase/
+firebase-debug.log*
