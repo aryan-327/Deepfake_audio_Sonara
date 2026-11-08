@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="sonara-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35" />
+      <stop offset="100%" stop-color="#FFC857" />
+    </linearGradient>
+    <radialGradient id="sonara-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Base Container -->
+  <rect width="48" height="48" rx="14" fill="#0D0B0A" />
+  <rect width="46" height="46" x="1" y="1" rx="13" stroke="#FF6B35" stroke-opacity="0.3" stroke-width="1.5" />
+  
+  <!-- Ambient Inner Glow -->
+  <circle cx="24" cy="24" r="18" fill="url(#sonara-glow)" />
+  
+  <!-- Acoustic Soundwave / Sonar Bars -->
+  <rect x="9" y="20" width="3.5" height="8" rx="1.75" fill="url(#sonara-grad)" />
+  <rect x="15" y="14" width="3.5" height="20" rx="1.75" fill="url(#sonara-grad)" />
+  <rect x="21.5" y="8" width="3.5" height="32" rx="1.75" fill="url(#sonara-grad)" />
+  <rect x="28" y="13" width="3.5" height="22" rx="1.75" fill="url(#sonara-grad)" />
+  <rect x="34.5" y="18" width="3.5" height="12" rx="1.75" fill="url(#sonara-grad)" />
+</svg>
