@@ -4,9 +4,15 @@ import shutil
 import asyncio
 from fastapi import FastAPI, UploadFile, File, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from model_service import run_inference
+from model_service import run_inference, init_deep_learning_models
 
 app = FastAPI(title="Sonara Audio Forensics API")
+
+@app.on_event("startup")
+async def startup_event():
+    print("[Sonara Backend] Initializing Deep Learning engine (Wav2Vec 2.0 + Calibrated SVM)...")
+    init_deep_learning_models()
+    print("[Sonara Backend] Deep Learning models loaded into memory and ready for inference!")
 
 app.add_middleware(
     CORSMiddleware,

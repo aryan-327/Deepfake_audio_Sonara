@@ -76,7 +76,7 @@ function App() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
 
       const res = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
